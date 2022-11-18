@@ -1,0 +1,22 @@
+body {
+    background-color: yellow;
+}
+.container {
+    height: 500px;
+    width: 500px;
+    background-color: red;
+    position: relative;
+}
+.whiteBox1 {
+    height: 200px;
+    width: 200px;
+    background-color: white;
+    /* border-radius: 50%; */
+    position: absolute;
+    right: -50px;
+    top: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
