@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 
 app.get('/linked-in', (req, res) => {
-    // res.send('All good, you can close this tab');
     res.redirect('http://localhost:4200/get-started')
 });
 app.get('/callback', (req, res) => {
