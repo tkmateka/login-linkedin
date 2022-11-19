@@ -1,15 +1,39 @@
 const express = require('express');
 const app = express();
+const path = require('path');
+const cors = require('cors');
+const PORT = 3000;
+const http = require('http').createServer(app);
 
-app.get('/linked-in', (req, res) => {
-    res.redirect('http://localhost:4200/get-started')
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Web Sockets
+const io = require('socket.io')(http, {
+    transports: ['websocket', 'polling'],
+    cors: {
+        origins: ['*']
+    }
 });
+
+io.on('connection', (socket) => {
+    console.log('a user connected...');
+
+    socket.on('message', (message) => {
+        console.log(message);
+        io.emit('message', `${socket.id.substr(0, 2)} said ${message}`);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('a user disconnected!');
+    });
+});
+
+// Routes
 app.get('/callback', (req, res) => {
-    console.log(req.query.code);
-    res.redirect('/linked-in');
+    io.emit('message', req.query.code);
+    res.render('close.ejs');
 });
-app.get('/open', (req, res) => {
-    res.redirect('https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=86cya16mladui4&redirect_uri=http://localhost:3000/callback&state=foobar&scope=r_liteprofile%20r_emailaddress')
-})
 
-app.listen(3000, () => console.log('running on port 3000'));
+http.listen(process.env.PORT || PORT, () => console.log("listening to port: " + PORT));
